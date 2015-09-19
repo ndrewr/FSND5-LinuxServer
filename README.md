@@ -113,14 +113,30 @@ The configuration process was done in roughly this sequence:
 - deleted backdoor with my IP
 
 
+
 RESOURCES:
-----------------------------------------------------I needed copious resources including the Udacity Linux Server config course, FSND Project 5 forums and Fullstack Slack channel counsel. Additionally the following resources:
+----------------------------------------------------
+I needed copious resources including the Udacity Linux Server config course, FSND Project 5 forums and Fullstack Slack channel counsel and Google. 
+
+Additionally the following specific resources:
 
 -https://discussions.udacity.com/t/markedly-underwhelming-and-potentially-wrong-resource-list-for-p5/8587
+
 -https://discussions.udacity.com/t/p5-how-i-got-through-it/15342
+
 -https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-12-04
-https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server
+
+-https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server
+
 -https://help.ubuntu.com/community/UFW
+
 -https://help.ubuntu.com/community/UbuntuTime
+
 -https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps
+
+-http://blog.trackets.com/2013/08/19/postgresql-basics-by-example.html
+
 -https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps
+
+-http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi
+
