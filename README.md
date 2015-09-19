@@ -15,62 +15,112 @@ Note: the app uses GitHub authentication to authorize post creation and editing.
 
 
 
-FILE STRUCTURE:
+ACCESS:
 -----------------------------------------------------
-This project packages the application files into the app folder 'yama'. Major modules and folders in the package include:
-* views.py - includes app routes
-* models.py
-* forms.py
-* static - static assets
-* templates - html files supporting Jinja2
+The assigned IP is 52.11.99.253
+Server can be acccessed via SSH through port 2200 with the user name 'grader'. 
 
-Alongside the app package are the flask configuration files, a module that sets up the default database and the app local development runner 'run.py'.
+```
+ssh -p 2200 grader@52.11.99.253
+```
+
+Auth key information is included separately.
 
 
 
-INSTRUCTIONS TO RUN:
+INSTALLED SOFTWARE:
 -----------------------------------------------------
-This project was first developed using 'Common code for the Relational Databases and Full Stack Fundamentals' courses found here:
-http://github.com/udacity/fullstack-nanodegree-vm
+This project began as a fresh installation of Ubuntu 14.04 but a number of software additions were needed to complete objectives including:
 
-The above describes a pre-configured vagrant setup. Quick start detailed here:
-http://docs.vagrantup.com/v2/getting-started
+- ntp
+- apache2, libapache2-mod-wsgi, python-setuptools
+- git
+- pip
+- virtualenv
+- python-dev, libpq-dev
+- postgresql, postgresql-contrib
 
-Vagrant is **not** required to run the project.
+Within the Python virtual environment the Flask app had additional requirements listed in:
+~/var/www/yama/requirements.txt
 
-Optional but recommended: setup a virtual environment for running the project. More details:
-http://docs.python-guide.org/en/latest/dev/virtualenvs/
-
-Project dependencies are listed under requirements.txt
-Pip is used in the example below.
-Whichever method, to run locally **ensure the neccessary python modules are already installed**:
+These app-specific installations were done with the pip command:
 ```
 pip install -r requirements.txt
 ```
 
-Next to run on localhost:5100 (yes, 5100) simply:
-```
-python run.py
-```
-
-The above file will initialize a sample course database and start the app running locally on port 5100.
-The test server uses Flask's built-in web server.
-
-Users can view any course details but must login with Github credentials to access Create, Update and Delete privileges.
 
 
-
-DEVELOPMENT NOTES:
+CONFIGURATION STEPS:
 -----------------------------------------------------
-The project uses the Flask microframework and several key extensions to aid development. Data is stored in local test environment using SQLite but on deployment to Heroku PostgreSQL was used.
+The configuration process was done in roughly this sequence:
 
-The Flask webserver is used to test locally but on deployment Gunicorn was used for better concurrent connection handling.
+**CREATED AWS instance, downloaded Udacity RSA key**
 
-Flask configuration was a minor issue but to allow graders to run the app locally, private key information was included in the repo temporarily.
+- (from Local machine) login to root@52.11.99.253 using udacity RSA key
+- (on server) adduser *grader*
+- add file to sudoers.d with user permission ALL
+- switched to *grader* account
+- (back on Local dev machine) ssh-keygen to create RSA key pair
+- (back on server) created .ssh directory in /home
+- created authenticated_keys file
+- set ownership of dir and file
+- manual copy of public rss key info
+
+**CAN NOW LOGIN AS grader**
+
+- add backdoor with my IP => for contingency
+- In *sshd_config*: changed port to 2200
+- config UFW for port 2200, 80, 123
+- enabled UFW
+- UTC time set with dpkg-reconfigure tzdata
+- installed ntp for auto time-sync
+- updated all software with apt-get update/upgrade
+- installed apache2, libapache2-mod-wsgi
+- verified apache2 working
+- installed git, virtualenv, python-dev, libpq-dev
+- git cloned FSND3 to ~/var/www
+- removed .git
+- create yama.wsgi file in ~/var/www/yama/
+- installed pip, virtualenv (via pip)
+
+**APP directory structure set**
+
+- installed postgresql, postgresql-contrib
+- created user *yama* to access app postgresql db
+- switched to user *postgres* (created by default)
+- enter postgresql
+- (in postgresql) created DB ‘yama' with pw ‘noborimasho’ and DB ROLE ‘yama’
+- set DB privileges for ROLE ‘yama’
+- (exit postgresql) updated Flask app settings with db location
+- run default_course_data.py to bootstrap the app db
+
+**DB setup and initialized**
+
+- activated app’s virtualenv and installed from req.txt with pip, deactivated
+- create and enable virtual host config file yama.conf in /etc/apache2/sites-available/
+- reload apache 2
+- tried to visit page at site ip => server failure
+- used ‘tail /var/log/apache2/error.log’ cmd to debug => venv modules missing
+- [flask docs explained needed config] (http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi)
+- modified yama.wsgi with path to venv files
+
+**Catalog app now loads at site ip**
+
+- retrieved Host name from IP address
+- modified yama.conf with Server alias
+- updated Github user auth with Host name info
+- disabled root remote login in ssh/sshd_config
+- deleted backdoor with my IP
 
 
-SUGGESTIONS:
------------------------------------------------------
-* allow only post creator to delete posts
-* implement xml data endpoints
-* CASCADE deletes (currently unneeded since no dependcy btwn db models...would change if Catalogs or Users could be deleted)
+RESOURCES:
+----------------------------------------------------I needed copious resources including the Udacity Linux Server config course, FSND Project 5 forums and Fullstack Slack channel counsel. Additionally the following resources:
+
+-https://discussions.udacity.com/t/markedly-underwhelming-and-potentially-wrong-resource-list-for-p5/8587
+-https://discussions.udacity.com/t/p5-how-i-got-through-it/15342
+-https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-12-04
+https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server
+-https://help.ubuntu.com/community/UFW
+-https://help.ubuntu.com/community/UbuntuTime
+-https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps
+-https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps
