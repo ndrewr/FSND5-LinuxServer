@@ -69,7 +69,7 @@ The configuration process was done in roughly this sequence:
 **CAN NOW LOGIN AS grader**
 
 - add backdoor with my IP => for contingency
-- In *sshd_config*: changed port to 2200
+- In *sshd_config*: changed port to 2200, set AllowedUser as *grader*
 - config UFW for port 2200, 80, 123
 - enabled UFW
 - UTC time set with dpkg-reconfigure tzdata
@@ -110,7 +110,7 @@ The configuration process was done in roughly this sequence:
 - modified yama.conf with Server alias
 - updated Github user auth with Host name info
 - disabled root remote login in ssh/sshd_config
-- deleted backdoor with my IP
+- deleted UFW 'backdoor' with my IP
 
 
 
@@ -139,4 +139,5 @@ Additionally the following specific resources:
 -https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps
 
 -http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi
+
 
